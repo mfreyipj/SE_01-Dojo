@@ -1,12 +1,16 @@
-grid = [[1, 8, 2],
-        [4, 3, 5],
-        [7, 6, 0]]
+grid = [[15, 2, 1, 12],
+        [8, 5, 6, 11],
+        [4, 9, 10, 7],
+        [3, 14, 13, 0]]
 
-''' Control grid -> to test the evaluate function
-grid = [[1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 0]]
+''' # Control grid -> to test the evaluate function
+grid = [[1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 0]]
 '''
+max_number = len(grid)**2 - 1
+
 
 def printGrid():
     for i in range(len(grid)):
@@ -34,7 +38,7 @@ def getNumberInput():
         except:
             print("That's not a real number, try again!\n")
         else:
-            if (userInput > 0 and userInput < 9):
+            if (userInput > 0 and userInput < max_number):
                 return userInput
             else:
                 print("This number is not part of the grid, try again! \n")
@@ -74,6 +78,30 @@ def evaluateAdjacencyToZero(number):
     print("The entered number is not adjacent to the empty field!")
     return False
 
+def evaluateAdjacencyToZeroEasy(number):
+
+    # Get the indexes of the number and zero
+    i_number = find(grid, number)
+    i_zero = find(grid, 0)
+
+    # Check whether the number is in the same row or same column
+    sameRow = i_zero[0] == i_number[0]
+    sameColumn = i_zero[1] == i_number[1] 
+
+
+    # Get the sum of the index of both numbers
+    # Examples : 0/0 -> 0, 1/1 -> 2
+    indexSumZero = i_zero[0] + i_zero[1]
+    indexSumNumber = i_number[0] + i_number[1]
+
+    if((indexSumZero - indexSumNumber == 1 or indexSumZero - indexSumNumber == -1) and (sameRow or sameColumn)):
+        return True
+    else:
+        print("The entered number is not adjacent to the empty field!\n")
+        return False
+
+
+
 # Exchange a given number with the zero in the grid
 def exchange_with_zero(number):
 
@@ -93,7 +121,7 @@ def evaluateGrid(g):
    expected_number = 1   
    for i in range(len(g)):
         for j in range(len(g[i])):
-            if int(g[i][j]) == expected_number or expected_number == 9:
+            if int(g[i][j]) == expected_number or expected_number == max_number+1:
                 expected_number += 1
             else:
                 return False    
@@ -110,11 +138,10 @@ def main():
         # request a number to be moved
         number_to_exchange = getNumberInput()
         # if the number is adjacent to the empty field, exchange them
-        if evaluateAdjacencyToZero(number_to_exchange):
+        if evaluateAdjacencyToZeroEasy(number_to_exchange):
             exchange_with_zero(number_to_exchange)
-            
+
     print("You completed the game!")
-    quit()
-    
+    quit()    
 
 main()
