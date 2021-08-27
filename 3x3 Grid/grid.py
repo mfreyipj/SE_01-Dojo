@@ -1,3 +1,4 @@
+'''
 grid = [[15, 2, 1, 12],
         [8, 5, 6, 11],
         [4, 9, 10, 7],
@@ -7,9 +8,16 @@ grid = [[15, 2, 1, 12],
 grid = [[1, 2, 3, 4],
         [5, 6, 7, 8],
         [9, 10, 11, 12],
-        [13, 14, 15, 0]]
-'''
-max_number = len(grid)**2 - 1
+        [13, 14, 0, 15]]
+
+max_number = len(grid)**2
+
+def reset_grid():
+    grid = [[1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 0, 15]]
+    return grid
 
 
 def printGrid():
@@ -89,27 +97,51 @@ def evaluateGrid(g):
    expected_number = 1   
    for i in range(len(g)):
         for j in range(len(g[i])):
-            if int(g[i][j]) == expected_number or expected_number == max_number+1:
+            if int(g[i][j]) == expected_number or expected_number == max_number:
                 expected_number += 1
             else:
                 return False    
    return True
 
+def playGame():
+    moveCount = 0
+    grid = reset_grid()
+    while(evaluateGrid(grid) != True):
+            printGrid()
+            # request a number to be moved
+            number_to_exchange = getNumberInput()
+            # if the number is adjacent to the empty field, exchange them
+            if evaluateAdjacencyToZero(number_to_exchange):
+                exchange_with_zero(number_to_exchange)
+                moveCount = moveCount + 1
+                print(moveCount)
+    
+    return moveCount
 
 def main():
 
     # Welcome user
     print("Welcome to the game! \n")
     
-    while(evaluateGrid(grid) != True):
-        printGrid()
-        # request a number to be moved
-        number_to_exchange = getNumberInput()
-        # if the number is adjacent to the empty field, exchange them
-        if evaluateAdjacencyToZero(number_to_exchange):
-            exchange_with_zero(number_to_exchange)
+    lowestMoveCount = -1
 
-    print("You completed the game!")
+    for i in range(3):
+        print("It's your turn Player " + str(i) + "!")
+        # First player set's the first official score
+        if lowestMoveCount == -1:
+            
+            lowestMoveCount = playGame()
+            print("New lowest move count")
+            print(lowestMoveCount)
+        else:
+            newMoveCount = playGame()
+            # replace lowest move count with new move count if it was lower
+            if (newMoveCount < lowestMoveCount):
+                lowestMoveCount = newMoveCount
+
+
+    print("You completed the game!")  
+    print("The lowest move count was " + str(lowestMoveCount)) 
     quit()    
 
 main()
